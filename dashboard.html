@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dingle Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #006644;
+      color: white;
+      text-align: center;
+      padding-bottom: 150px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card {
+      margin: 30px auto 10px;
+      max-width: 360px;
+      background: #ffffff;
+      color: #222;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,.08);
+      padding: 22px;
+    }
+
+    h2 {
+      margin: 0 0 10px;
+      color: #00b75a;
+    }
+
+    .bal {
+      font-size: 24px;
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .bal span {
+      margin-right: 10px;
+    }
+
+    .eye {
+      cursor: pointer;
+      font-size: 20px;
+      user-select: none;
+    }
+
+    .withdraw-btn {
+      max-width: 380px;
+      width: 90%;
+      margin: 0 auto;
+      padding: 18px;
+      font-size: 18px;
+      font-weight: bold;
+      background: #00b75a;
+      color: white;
+      border: none;
+      border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      cursor: pointer;
+    }
+
+    .withdraw-btn:hover {
+      background: #019a4c;
+    }
+
+    .btn-box {
+      max-width: 380px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      padding: 24px 10px 30px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .btn {
+      padding: 18px 10px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      background: #00b75a;
+      color: white;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .btn:hover {
+      background: #019a4c;
+    }
+
+    .banner {
+      max-width: 380px;
+      margin: 0 auto;
+      background: #009159;
+      padding: 16px;
+      border-radius: 14px;
+      font-weight: bold;
+      box-shadow: 0 3px 10px rgba(0,0,0,.15);
+    }
+
+    #popup {
+      position: fixed;
+      left: 50%;
+      bottom: 90px;
+      transform: translateX(-50%);
+      background: #00b75a;
+      color: white;
+      padding: 14px 24px;
+      border-radius: 30px;
+      font-weight: bold;
+      opacity: 0;
+      transition: opacity 0.5s;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    #withdraw {
+      position: fixed;
+      bottom: 25px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 16px;
+      font-weight: bold;
+      opacity: 0;
+      transition: opacity 1s ease;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- balance card -->
+  <div class="card">
+    <h2>👋 Welcome, <span id="username">User</span></h2>
+    <p class="bal">
+      <span id="balance">₦0</span>
+      <span class="eye" onclick="toggleBalance()">👁️</span>
+    </p>
+  </div>
+
+  <!-- Withdraw button (top row) -->
+  <button class="withdraw-btn" onclick="go('withdraw.html')">💸 Withdraw</button>
+
+  <!-- Other buttons -->
+  <div class="btn-box">
+    <button class="btn" onclick="go('game.html')">🎮 Game</button>
+    <button class="btn" onclick="go('buycode.html')">💳 Code</button>
+    <button class="btn" onclick="go('history.html')">📜 History</button>
+    <button class="btn" onclick="go('data.html')">📶 Data</button>
+    <button class="btn" onclick="go('airtime.html')">📱 Airtime</button>
+    <button class="btn" onclick="go('trade.html')">📈 Trade</button>
+  </div>
+
+  <!-- Motivational banner -->
+  <div class="banner">💡 Your money should work for <em>you</em> — let Dingle trade while you relax!</div>
+
+  <!-- Pop-up and Withdraw ticker -->
+  <div id="popup">🚀 Trade now and get instant money</div>
+  <div id="withdraw">Loading…</div>
+
+<script>
+  const LS = localStorage;
+  let user = JSON.parse(LS.getItem("dingle_user") || "{}");
+  if (!user.name) location.href = "signup.html";
+  user.balance = user.balance ?? 20000;
+  const balEl = document.getElementById("balance");
+  document.getElementById("username").textContent = user.name;
+  let showBal = true;
+  function updateBalance() {
+    balEl.textContent = showBal ? `₦${user.balance.toLocaleString()}` : '•••••••';
+  }
+  updateBalance();
+  function toggleBalance() {
+    showBal = !showBal;
+    updateBalance();
+  }
+  function go(p) {
+    location.href = p;
+  }
+
+  // Popup message
+  const popup = document.getElementById("popup");
+  setTimeout(() => popup.style.opacity = 1, 500);
+  setTimeout(() => popup.style.opacity = 0, 10500);
+
+  // Withdraw ticker
+  const withdraw = document.getElementById("withdraw");
+  const names = ["Emeka", "Ada", "Blessing", "Ibrahim", "Tolu", "Uche", "Zainab", "Kelechi", "Favour", "Ifeoma", "Samuel", "Peter"];
+  const amounts = ["₦2,000", "₦3,000", "₦3,800", "₦4,500", "₦5,000", "₦6,200", "₦7,000", "₦8,500", "₦10,000"];
+  function rollWithdraw() {
+    withdraw.style.opacity = 0;
+    setTimeout(() => {
+      const name = names[Math.floor(Math.random() * names.length)];
+      const amt = amounts[Math.floor(Math.random() * amounts.length)];
+      const t = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      withdraw.textContent = `✅ ${name} withdrew ${amt} – ${t}`;
+      withdraw.style.opacity = 1;
+    }, 900);
+  }
+  rollWithdraw();
+  setInterval(rollWithdraw, 10000);
+
+  // Auto balance refresh
+  window.addEventListener("focus", updateBalance);
+</script>
+
+</body>
+</html>
